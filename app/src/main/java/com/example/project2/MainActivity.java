@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-    Button scanbtn, signoutbtn;
+    Button scanbtn, signoutbtn, batchbtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         scanbtn = findViewById(R.id.btn_to_scanqr);
         signoutbtn = findViewById(R.id.signout);
+        batchbtn = findViewById(R.id.btn_batch);
 
         scanbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,6 +27,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        batchbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, BatchActivity.class);
+                startActivity(intent);
+            }
+        });
+
         signoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
