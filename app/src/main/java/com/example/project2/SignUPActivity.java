@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -14,12 +15,26 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class SignUPActivity extends AppCompatActivity {
     Button btnSignUp,btnLinkToLogIn;
     EditText signupInputEmail,signupInputPassword;
     TextInputLayout signupInputLayoutEmail,signupInputLayoutPassword;
     ProgressBar progressBar;
-    String TAG;
+    String TAG, postext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +84,47 @@ public class SignUPActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
         //create user
+        MediaType MEDIA_TYPE = MediaType.parse("application/json");
+        String url = "http://192.168.42.186:8000/user";
 
-        Toast.makeText(getApplicationContext(), "You are successfully Registered !!", Toast.LENGTH_SHORT).show();
+        OkHttpClient client = new OkHttpClient();
+
+        JSONObject postdata = new JSONObject();
+        try {
+            postdata.put("Email",email);
+            postdata.put("Password",password);
+        } catch(JSONException e){
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        RequestBody body = RequestBody.Companion.create(MEDIA_TYPE, postdata.toString());
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/json")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                String mMessage = e.getMessage().toString();
+                //postext = "Connection Failed";
+                Log.w("Failure Response", mMessage);
+                //call.cancel();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                String mMessage = response.body().string();
+                postext = mMessage;
+                Log.e(TAG, mMessage);
+            }
+        });
+
+        Toast.makeText(getApplicationContext(), "You are successfully Registered !!" + postext, Toast.LENGTH_SHORT).show();
     }
 
     private boolean checkEmail() {
