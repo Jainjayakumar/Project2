@@ -22,7 +22,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ScanResultActivity extends AppCompatActivity {
-    String posttext="Press the button",scanResult;
+    String posttext="Error",scanResult;
     TextView respdisp;
     String url = "http://192.168.42.204:8000/";
     String serverResponse;
